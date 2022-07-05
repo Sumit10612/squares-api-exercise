@@ -13,6 +13,8 @@ Solution exposes 3 endpoints
 > `api/squares` : <br/>
 >> `GET`: Returns list for squares with points
 
+<br/><br/>
+Swagger -> `/swagger/index.html`
 
 ## Technical
 Solution is built on `.net 6` web api, and using `SQL Server` as a persistant layer by default (but can be modified to use any datastores).
