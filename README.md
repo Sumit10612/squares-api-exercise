@@ -1,0 +1,2 @@
+# squares-api-exercise
+assignment
