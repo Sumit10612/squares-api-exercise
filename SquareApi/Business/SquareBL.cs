@@ -53,8 +53,9 @@ public class SquareBL : ISquareBL
                     var sgp = sg.Select(p => p.Point);
                     var stiCount = sqaresToInsert.Where(s => sgp.Contains(s.Point))
                         .GroupBy(s => s.Id)
-                        .Select(s => s.Count());
-                    if (!stiCount.Any(c => c == 4))
+                        .Select(s => s.Count())
+                        .ToList();
+                    if (!stiCount.Any(c => c >= 4))
                     {
                         sqaresToInsert.AddRange(sg.ToList());
                     }
