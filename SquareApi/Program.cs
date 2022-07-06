@@ -3,6 +3,7 @@ using SquareApi.Business;
 using SquareApi.Business.Contract;
 using SquareApi.Data;
 using SquareApi.Data.Contracts;
+using SquareApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +27,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
+
+// Global exception handling middleware
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();
