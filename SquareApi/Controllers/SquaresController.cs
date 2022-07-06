@@ -11,7 +11,7 @@ public class SquaresController : ControllerBase
     private readonly ISquareBL _squareBL;
 
     public SquaresController(ISquareBL squareBL) => _squareBL = squareBL ??
-        throw new ArgumentNullException(nameof(ISquareBL));
+        throw new ArgumentNullException(nameof(squareBL));
 
     /// <summary>
     /// Returns all possible squares with all 4 points forming that square.
@@ -61,7 +61,7 @@ public class SquaresController : ControllerBase
     /// </remarks>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Square>>> Get() => 
+    public async Task<ActionResult<IEnumerable<Square>>> GetSquares() => 
         Ok(await _squareBL.GetAsync());
         
 }

@@ -46,7 +46,7 @@ public class PointsController : ControllerBase
     /// <response code="400">if input is null or with some invalid values</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> Post(IEnumerable<Point> points)
+    public async Task<ActionResult> AddPoints(IEnumerable<Point> points)
     {
         if (!ModelState.IsValid) return BadRequest();
         await _squareBL.AddAsync(points);
@@ -58,7 +58,7 @@ public class PointsController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeletePoint(int id)
     {
         await _squareBL.DeleteAsync(id);
         return Ok();

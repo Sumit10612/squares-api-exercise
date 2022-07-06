@@ -12,7 +12,7 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     protected readonly SquareApiDbContext context;
     protected DbSet<T> dbSet;
 
-    public RepositoryBase(SquareApiDbContext context)
+    protected RepositoryBase(SquareApiDbContext context)
     {
         this.context = context;
         dbSet = this.context.Set<T>();

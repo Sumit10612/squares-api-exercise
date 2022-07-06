@@ -13,13 +13,13 @@ public class SquareBL : ISquareBL
     private readonly IUnitofWork _unitofWork;
 
     public SquareBL(IUnitofWork unitofWork) => _unitofWork = unitofWork ??
-        throw new ArgumentNullException(nameof(IUnitofWork));
+        throw new ArgumentNullException(nameof(unitofWork));
 
     /// <summary>
-    /// Accepts <see cref="IEnumerable"/> of <see cref="Point"/>
+    /// Accepts <see cref="IEnumerable{Point}"/>
     /// loops through all the points and finds all the squares corresponding to
     /// each point using helper method <see cref="FindPossibleSquares(Point)"/>
-    /// and then commits <see cref="Point"/> & <see cref="Square"/>
+    /// and then commits <see cref="Point"/> and <see cref="Square"/>
     /// </summary>
     /// <param name="points"></param>
     /// <returns>void</returns>
@@ -91,7 +91,7 @@ public class SquareBL : ISquareBL
                 if (Math.Abs(a.X - b.X) == Math.Abs(a.Y - c.Y) && Math.Abs(d.X - c.X) == Math.Abs(b.Y - c.Y))
                 {
                     var pointInList = _points.Where(p => new Point[] { b, d }.Contains(p)).ToList();
-                    if (pointInList.Count() == 2)
+                    if (pointInList.Count == 2)
                     {
                         var id = Guid.NewGuid().ToString();
                         squares.Add(new Square { SquareId = id, Point = a });

@@ -12,7 +12,7 @@ public class Point
 
     public override bool Equals(object obj)
     {
-        if(obj == null && !(obj is Point)) return false;
+        if(obj == null) return false;
         Point other = (Point)obj;
         return X == other.X && Y == other.Y;
     }
