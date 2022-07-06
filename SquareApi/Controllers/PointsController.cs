@@ -14,23 +14,49 @@ public class PointsController : ControllerBase
         throw new ArgumentNullException(nameof(squareBL));
 
     /// <summary>
-    /// Endpoint for importing list of points
+    /// Adds list of points
     /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /points
+    ///     [
+    ///         {
+    ///             "x": 0,
+    ///             "y": 0
+    ///         },
+    ///         {
+    ///             "x": 0,
+    ///             "y": 1
+    ///         },
+    ///         {
+    ///             "x": 1,
+    ///             "y": 0
+    ///         },
+    ///         {
+    ///             "x": 1,
+    ///             "y": 1
+    ///         }
+    ///      ]
+    ///
+    /// </remarks>
     /// <param name="points"></param>
-    /// <returns></returns>
+    /// <returns>A newly created TodoItem</returns>
+    /// <response code="200">returns 200 on success</response>
+    /// <response code="400">if input is null or with some invalid values</response>
     [HttpPost]
-    public async Task<IActionResult> Post(IEnumerable<Point> points)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> Post(IEnumerable<Point> points)
     {
         if (!ModelState.IsValid) return BadRequest();
         await _squareBL.AddAsync(points);
-        return Ok();
+        return Ok(points);
     }
 
     /// <summary>
-    /// Endpoint for deleting a point from list.
+    /// Deletes a specific point.
     /// </summary>
     /// <param name="id"></param>
-    /// <returns></returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
