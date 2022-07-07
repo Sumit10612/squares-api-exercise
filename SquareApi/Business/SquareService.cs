@@ -9,7 +9,9 @@ namespace SquareApi.Business;
 /// </summary>
 public class SquareService : ISquareService
 {
-    private HashSet<string> _points;
+    private const int _processSize = 500;
+    private HashSet<string> _pointsSet;
+    private List<Point> _points;
 
     private readonly IPointRepository _pointRepository;
 
@@ -18,24 +20,22 @@ public class SquareService : ISquareService
 
     /// <summary>
     /// loops through all the points and finds all the squares corresponding to
-    /// each point using helper method <see cref="FindPossibleSquares(IEnumerable{Point}, Point)"/>
+    /// each point using helper method <see cref="FindPossibleSquares(int, int)"/>
     /// </summary>
     /// <returns>void</returns>
     public async Task<IEnumerable<Square>> GetSquaresAsync()
     {
-        var points = await _pointRepository.GetAllAsync();
-        _points = points.Select(p => p.ToString()).ToHashSet();
+        _points = (await _pointRepository.GetAllAsync()).ToList();
+        _pointsSet = _points.Select(p => p.ToString()).ToHashSet();
 
-        var tasks = new List<Task<IEnumerable<Square>>>();
-        foreach (var point in points)
-        {
-            tasks.Add(Task.Run(() => FindPossibleSquares(points, point)));
-        }
+        //process points in parallel with a set of 500
+        int processes = (_points.Count / _processSize) + 1;
 
-        var resultSet = await Task.WhenAll(tasks);
+        var resultSet = new List<IEnumerable<Square>>();
+        Parallel.For(0, processes, process => resultSet.Add(FindPossibleSquares(process, _processSize)));
+
 
         var squares = new List<Square>();
-
         var squareSet = new HashSet<string>();
         foreach (var result in resultSet)
         {
@@ -56,29 +56,34 @@ public class SquareService : ISquareService
     /// <summary>
     /// Helper method to find all possible squares for the specified Point.
     /// </summary>
-    /// <param name="points"></param>
-    /// <param name="a"></param>
+    /// <param name="process"></param>
+    /// <param name="processSize"></param>
     /// <returns><see cref="IEnumerable{Square}"/></returns>
-    private IEnumerable<Square> FindPossibleSquares(IEnumerable<Point> points, Point a)
+    private IEnumerable<Square> FindPossibleSquares(int process, int processSize)
     {
         var squares = new List<Square>();
 
         // Loop through each point & taking `point` as second point of a diagonal
         // find other two points & then check whether those points exists in the
         // list or not.
-        foreach (var c in points)
+        var startIndex = process * processSize;
+        var endIndex = startIndex + processSize > _points.Count ? _points.Count : startIndex + processSize;
+        for (int i = startIndex; i < endIndex; i++)
         {
-            if (a.Equals(c)) continue;
-
-            var diagVertex = GetRestPoints(a, c);
-            if (diagVertex != null && _points.Contains(diagVertex[0].ToString()) 
-                && _points.Contains(diagVertex[1].ToString()))
+            for ( int j = 0; j < _points.Count; j++)
             {
-                // if other to point exists means it's a square
-                squares.Add(new Square
+                if (_points[i].Equals(_points[j])) continue;
+
+                var diagVertex = GetRestPoints(_points[i], _points[j]);
+                if (diagVertex != null && _pointsSet.Contains(diagVertex[0].ToString())
+                    && _pointsSet.Contains(diagVertex[1].ToString()))
                 {
-                    Points = new List<Point> { a, diagVertex[0], c, diagVertex[1] }
-                });
+                    // if other to point exists means it's a square
+                    squares.Add(new Square
+                    {
+                        Points = new List<Point> { _points[i], diagVertex[0], _points[j], diagVertex[1] }
+                    });
+                }
             }
         }
         return squares;
