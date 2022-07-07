@@ -11,8 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<SquareApiDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<IUnitofWork, UnitOfWork>();
-builder.Services.AddScoped<ISquareBL, SquareBL>();
+
+builder.Services.AddScoped<ISquareService, SquareService>();
+builder.Services.AddScoped<IPointService, PointService>();
+
+builder.Services.AddScoped<IPointRepository, PointRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -32,6 +35,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// migrate any database changes on startup (includes initial db creation)
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<SquareApiDbContext>();
+    dbContext.Database.Migrate();
 }
 
 app.MapControllers();

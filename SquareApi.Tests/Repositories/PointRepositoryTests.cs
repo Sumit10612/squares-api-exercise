@@ -8,7 +8,7 @@ namespace SquareApi.Tests.Repositories;
 [TestClass]
 public class PointRepositoryTests
 {
-    private readonly IUnitofWork _uow;
+    private readonly IPointRepository _repository;
     private List<Point> _points => new List<Point>
     {
         new Point { X = 0, Y = 0 },
@@ -22,16 +22,15 @@ public class PointRepositoryTests
         var builder = new DbContextOptionsBuilder<SquareApiDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString());
         var context = new SquareApiDbContext(builder.Options);
-        _uow = new UnitOfWork(context);
+        _repository = new PointRepository(context);
     }
 
     [TestMethod]
     public async Task AddPointTest()
     {
-        await _uow.Points.AddRangeAsync(_points);
-        await _uow.SaveChangesAsync();
+        await _repository.AddRangeAsync(_points);
 
-        int count = (await _uow.Points.GetAllAsync()).Count();
+        int count = (await _repository.GetAllAsync()).Count();
 
         Assert.AreEqual(4, count);
     }
@@ -39,14 +38,13 @@ public class PointRepositoryTests
     [TestMethod]
     public async Task DeletePointTest()
     {
-        await _uow.Points.AddRangeAsync(_points);
-        await _uow.SaveChangesAsync();
+        await _repository.AddRangeAsync(_points);
 
-        await _uow.Points.DeleteAsync(2);
-        await _uow.SaveChangesAsync();
+        var deletedPoint = await _repository.DeleteAsync(_points[0]);
 
-        int count = (await _uow.Points.GetAllAsync()).Count();
+        int count = (await _repository.GetAllAsync()).Count();
 
+        Assert.IsTrue(_points[0].Equals(deletedPoint));
         Assert.AreEqual(3, count);
     }
 }

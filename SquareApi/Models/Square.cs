@@ -1,11 +1,8 @@
-﻿using System.Text.Json.Serialization;
-
-namespace SquareApi.Models;
+﻿namespace SquareApi.Models;
 
 public class Square
 {
-    [JsonIgnore]
-    public int Id { get; set; }
-    public string SquareId { get; set; } 
-    public Point Point { get; set; }
+    public List<Point> Points { get; set; }
+
+    public override string ToString() => string.Join(",", Points.OrderBy(p => p.X).ThenBy(p => p.Y));
 }
