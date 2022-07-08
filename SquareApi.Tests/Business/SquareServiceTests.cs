@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SquareApi.Business;
+﻿using SquareApi.Business;
 using SquareApi.Business.Contract;
-using SquareApi.Data;
 using SquareApi.Data.Contracts;
-using SquareApi.Models;
 using System.Diagnostics;
 
 namespace SquareApi.Tests.Business;
@@ -38,8 +35,6 @@ public class SquareServiceTests
     }
 
     [TestMethod]
-    [DataRow(500)]
-    [DataRow(1000)]
     [DataRow(5000)]
     public async Task FindSquares_Performance_Tests(int noOfPoints)
     {

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SquareApi.Data;
-using SquareApi.Data.Contracts;
-using SquareApi.Models;
+﻿using SquareApi.Data.Contracts;
 
 namespace SquareApi.Tests.Repositories;
 
@@ -26,13 +23,23 @@ public class PointRepositoryTests
     }
 
     [TestMethod]
-    public async Task AddPointTest()
+    public async Task AddPointsTest()
     {
         await _repository.AddRangeAsync(_points);
 
         int count = (await _repository.GetAllAsync()).Count();
 
         Assert.AreEqual(4, count);
+    }
+
+    [TestMethod]
+    public async Task AddPointTest()
+    {
+        await _repository.AddAsync(_points[0]);
+
+        int count = (await _repository.GetAllAsync()).Count();
+
+        Assert.AreEqual(1, count);
     }
 
     [TestMethod]
