@@ -53,12 +53,12 @@ public class PointsController : ControllerBase
     /// Sample request:
     ///     
     ///     POST /point
-    ///     [
+    ///     
     ///         {
     ///             "x": 1,
     ///             "y": 0
     ///         }
-    ///     ]
+    ///     
     /// </remarks>
     /// <param name="point"></param>
     /// <returns></returns>
@@ -89,7 +89,7 @@ public class PointsController : ControllerBase
     /// </remarks>
     /// <param name="point"></param>
     /// <returns></returns>
-    [HttpDelete("{id}")]
+    [HttpDelete]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
